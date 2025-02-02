@@ -1,37 +1,11 @@
-# .github/workflows/docker-build.yml
-name: Docker Build and Push
+# Use the official Odoo image directly
+FROM odoo:16.0
 
-on:
-  push:
-    branches:
-      - main
+# Add any custom configurations if needed
+COPY ./config /etc/odoo
+COPY ./addons /mnt/extra-addons
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Convert repository name to lowercase
-        run: echo "REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-      
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: |
-            ghcr.io/${{ env.REPO_NAME }}:latest
-            ghcr.io/${{ env.REPO_NAME }}:${{ github.sha }}
+# Expose the port
+EXPOSE 8069
+
+# The CMD is inherited from the base image
