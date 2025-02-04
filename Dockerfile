@@ -1,5 +1,5 @@
 # Use the official Odoo image directly
-FROM odoo:18.0
+FROM odoo:latest
 
 # Expose the port
 EXPOSE 8069
